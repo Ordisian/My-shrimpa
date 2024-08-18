@@ -11,14 +11,23 @@ extends CharacterBody3D
 @onready var standing_collision_shape: CollisionShape3D = $StandingCollisionShape
 
 @onready var animation_player: AnimationPlayer = $neck/Head/Eyes/AnimationPlayer
+@onready var gun_animations: AnimationPlayer = $GunAnimations
+@onready var muzzle_flash: GPUParticles3D = $neck/Head/Eyes/PlayerCamera/Pistol/MuzzleFlash
+
 
 # RayCast Nodes
-
-@onready var ray_cast_ceiling: RayCast3D = $RayCastCeiling
+@onready var ray_cast_ceiling: RayCast3D = $Checks/RayCastCeiling
 @onready var right: RayCast3D = $Checks/Right
 @onready var left: RayCast3D = $Checks/Left
 @onready var front: RayCast3D = $Checks/Front
 @onready var back: RayCast3D = $Checks/Back
+
+@onready var player_detection_ray: RayCast3D = $neck/Head/Eyes/PlayerCamera/Player_Detection_Ray
+
+# Health Vars
+var health = 100
+const health_max = 100
+var damage = 0
 
 # Speed Vars
 var current_speed = 5.0
@@ -81,14 +90,30 @@ const wall_jump_cooldown_max = 0.7
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+func _enter_tree() -> void:
+	set_multiplayer_authority((str(name).to_int()))
+
 func _ready():
+	if not is_multiplayer_authority(): return
+	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
+	player_camera.current = true
+
+
 func _input(event):
+	if not is_multiplayer_authority(): return
+	
 	if Input.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
-	if Input.is_action_pressed("shoot"):
+	if Input.is_action_just_pressed("shoot") and gun_animations.current_animation != "pistol_shoot":
+		play_pistol_shoot_effect.rpc()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		if player_detection_ray.is_colliding():
+			var hit_player = player_detection_ray.get_collider()
+			damage = 35
+			hit_player.receive_damage.rpc_id(hit_player.get_multiplayer_authority())
 	
 	# Mouse Looking Logic
 	if event is InputEventMouseMotion:
@@ -99,6 +124,7 @@ func _input(event):
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sens))
 			head.rotate_x(deg_to_rad(-event.relative.y * mouse_sens))
 			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+	
 
 func slide(delta, input_dir):
 	# Update slide cooldown timer
@@ -132,7 +158,6 @@ func slide(delta, input_dir):
 			can_slide = false
 			
 			slide_cooldown_timer = slide_cooldown_max  # Start the cooldown
-
 
 func check_wall_run_rays():
 	if front.is_colliding() || back.is_colliding() || left.is_colliding() || right.is_colliding():
@@ -312,6 +337,13 @@ func head_bob(input_dir, delta):
 		eyes.position.y = lerp(eyes.position.y, 0.0, delta * lerp_speed)
 		eyes.position.x = lerp(eyes.position.x,  0.0, delta * lerp_speed)
 
+func play_gun_animations(input_dir):
+	if gun_animations.current_animation == "Pistol_Shoot":
+		pass
+	elif input_dir != Vector2.ZERO and is_on_floor():
+		gun_animations.play("Pistol_Move")
+	else:
+		gun_animations.play("Pistol_Idle")
 
 func jump():
 	# Handle jump
@@ -328,6 +360,8 @@ func jump():
 
 
 func _physics_process(delta):
+	if not is_multiplayer_authority(): return
+	
 	# Get the input direction
 	var input_dir = Input.get_vector("left", "right", "forward", "back")
 	
@@ -338,6 +372,7 @@ func _physics_process(delta):
 	move(delta, input_dir)
 	movement_states(delta)
 	wall_run(delta)
+	play_gun_animations(input_dir)
 	
 	# Add the gravity.
 	if not is_on_floor():
@@ -350,3 +385,21 @@ func _physics_process(delta):
 	last_velocity = velocity
 	
 	move_and_slide()
+
+@rpc("any_peer")
+func play_pistol_shoot_effect():
+	gun_animations.stop()
+	gun_animations.play("Pistol_Shoot")
+	muzzle_flash.restart()
+	muzzle_flash.emitting = true
+
+@rpc("any_peer")
+func receive_damage(damage):
+	health -= damage
+	if health <= 0:
+		health = health_max
+		position = Vector3.ZERO
+
+func _on_gun_animations_animation_finished(anim_name: StringName) -> void:
+	if anim_name == "Pistol_Shoot":
+		gun_animations.play("Pistol_Idle")
