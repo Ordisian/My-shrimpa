@@ -1,6 +1,6 @@
-[gd_scene load_steps=16 format=3 uid="uid://8a0w3hlgbhwa"]
+[gd_scene load_steps=8 format=3 uid="uid://8a0w3hlgbhwa"]
 
-[ext_resource type="Script" path="res://Player.gd" id="1_h03uk"]
+[ext_resource type="PackedScene" uid="uid://cwienkfjgkcp7" path="res://PlayerScene.tscn" id="1_ga217"]
 [ext_resource type="Texture2D" uid="uid://wa4b26kd4m0h" path="res://assets/textures/dev/grids/Dark/texture_07.png" id="1_y2ckp"]
 [ext_resource type="Texture2D" uid="uid://cdycyw8kyycul" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="2_b1vul"]
 
@@ -20,167 +20,10 @@ sky = SubResource("Sky_eq547")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="Animation" id="Animation_ggvkt"]
-resource_name = "Jump"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(-0.0872665, -0.00349066, -0.0226893), Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerCamera:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, -0.00337076, 0), Vector3(0, -0.00337076, 0), Vector3(0, -0.00337076, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_irf86"]
-resource_name = "Landing"
-length = 1.5
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.966667),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(-0.0872665, 0.00349066, -0.0226893), Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerCamera:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0666667, 0.966667),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, -0.00337076, 0), Vector3(0, -0.5, 0), Vector3(0, -0.00337076, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_iiicu"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerCamera:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, -0.00337076, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("PlayerCamera:fov")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [100.4]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("..:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_p443e"]
-resource_name = "Slide"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerCamera:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, 0, 0), Vector3(-0.0523599, 0, -0.0174533), Vector3(0, 0, 0)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerCamera:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.2, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Vector3(0, -0.00337076, 0), Vector3(0, 0, 0), Vector3(0, -0.00337076, 0)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("PlayerCamera:fov")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.2, 1),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [100.4, 110.0, 100.4]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_7ge05"]
-_data = {
-"Jump": SubResource("Animation_ggvkt"),
-"Landing": SubResource("Animation_irf86"),
-"RESET": SubResource("Animation_iiicu"),
-"Slide": SubResource("Animation_p443e")
-}
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cjn3s"]
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6pxix"]
-height = 1.27506
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_p52wf"]
-
 [node name="World" type="Node3D"]
+
+[node name="CharacterBody3D" parent="." instance=ExtResource("1_ga217")]
+transform = Transform3D(0.0016755, 0, -0.999999, 0, 1, 0, 0.999999, 0, 0.0016755, -14.0536, 4.5838, -8.94347)
 
 [node name="Stage" type="Node3D" parent="."]
 
@@ -215,39 +58,51 @@ size = Vector3(1.05429, 15.2544, 63.1097)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.77429, 0.507656, -1.54933)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.24481, 7.42028, -1.16225)
 use_collision = true
-size = Vector3(8.25342, 1, 2.87451)
+size = Vector3(5.31238, 4.0741, 2.10034)
+material = SubResource("StandardMaterial3D_a2dmh")
+
+[node name="CSGBox3D15" type="CSGBox3D" parent="Stage"]
+transform = Transform3D(0.813233, 0.581938, 0, -0.581938, 0.813233, 0, 0, 0, 1, -4.201, 1.04297, -9.78568)
+use_collision = true
+size = Vector3(5.52533, 1, 2.87451)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.03466, 1.47769, -1.54933)
+transform = Transform3D(1, 0, 0, 0, 0.975454, -0.220204, 0, 0.220204, 0.975454, -10.6042, 0.845968, 1.89604)
 use_collision = true
-size = Vector3(3.73267, 1, 2.87451)
+size = Vector3(8.87171, 1, 16.072)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D8" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.03466, 2.57975, -7.18642)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2602, 2.57975, -9.19997)
 use_collision = true
-size = Vector3(3.73267, 1, 2.87451)
+size = Vector3(10.1837, 1, 6.90161)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D9" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.446813, 4.1171, -8.60766)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.446813, 4.1171, -9.27)
 use_collision = true
 size = Vector3(7.81256, 4.07471, 0.855713)
 material = SubResource("StandardMaterial3D_a2dmh")
 
-[node name="CSGBox3D10" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.68732, 2.57975, -7.59826)
+[node name="CSGBox3D14" type="CSGBox3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.65945, 5.95713, -6.44814)
 use_collision = true
-size = Vector3(3.73267, 1, 2.87451)
+size = Vector3(14.9678, 5.88355, 0.855713)
+material = SubResource("StandardMaterial3D_a2dmh")
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.3293, 2.57975, -9.23492)
+use_collision = true
+size = Vector3(15.0167, 1, 6.46008)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D11" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.36784, 0.168356, 0.598793)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.62793, 4.77622, -4.08427)
 use_collision = true
-size = Vector3(3.73267, 1, 2.87451)
+size = Vector3(9.28626, 1, 3.60669)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D5" type="CSGBox3D" parent="Stage"]
@@ -271,69 +126,3 @@ environment = SubResource("Environment_v1mfb")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
 transform = Transform3D(-0.866026, -0.356624, -0.350455, 3.58047e-14, -0.700909, 0.71325, -0.5, 0.617693, 0.607006, -9.86866, 7.00102, 11.6498)
 shadow_enabled = true
-
-[node name="Player" type="CharacterBody3D" parent="."]
-transform = Transform3D(0.0245194, 0, -0.999699, 0, 1, 0, 0.999699, 0, 0.0245194, -8.67156, 3.62903, -7.07719)
-top_level = true
-script = ExtResource("1_h03uk")
-
-[node name="Checks" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.305281, 0)
-
-[node name="Front" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(1.88738e-15, 4.28408e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.28408e-08, 0, 0, 0)
-
-[node name="Front_right" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(-3.09086e-08, -0.707107, 0.707107, 1, -4.37114e-08, 0, 3.09086e-08, 0.707107, 0.707107, 0, 0, 0)
-
-[node name="Right" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-
-[node name="Back_right" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(-3.09086e-08, -0.707107, -0.707107, 1, -4.37114e-08, 0, -3.09086e-08, -0.707107, 0.707107, 0, 0, 0)
-
-[node name="Back" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(1.88738e-15, -4.28408e-08, 1, -1, -4.37114e-08, 0, 4.37114e-08, -1, -4.28408e-08, 0, 0, 0)
-
-[node name="Back_left" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(-3.09086e-08, 0.707107, 0.707107, -1, -4.37114e-08, 0, 3.09086e-08, -0.707107, 0.707107, 0, 0, 0)
-
-[node name="Left" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(4.37114e-08, 1, -8.74228e-08, 1, -4.37114e-08, 0, -3.82137e-15, -8.74228e-08, -1, 0, 0, 0)
-
-[node name="Front_left" type="RayCast3D" parent="Player/Checks"]
-transform = Transform3D(3.09086e-08, 0.707107, 0.707107, 1, -4.37114e-08, 0, 3.09086e-08, 0.707107, -0.707107, 0, 0, 0)
-
-[node name="neck" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.22242, 0)
-
-[node name="Head" type="Node3D" parent="Player/neck"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0227172, 0)
-
-[node name="Eyes" type="Node3D" parent="Player/neck/Head"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0165973, 0)
-
-[node name="PlayerCamera" type="Camera3D" parent="Player/neck/Head/Eyes"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.00337076, 0)
-fov = 100.4
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Player/neck/Head/Eyes"]
-libraries = {
-"": SubResource("AnimationLibrary_7ge05")
-}
-
-[node name="StandingCollisionShape" type="CollisionShape3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.715236, 0)
-shape = SubResource("CapsuleShape3D_cjn3s")
-
-[node name="CrouchingCollisionShape" type="CollisionShape3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.345483, 0)
-shape = SubResource("CapsuleShape3D_6pxix")
-disabled = true
-
-[node name="RayCastCeiling" type="RayCast3D" parent="Player"]
-target_position = Vector3(0, 2, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.721327, 0)
-mesh = SubResource("CapsuleMesh_p52wf")

@@ -15,14 +15,10 @@ extends CharacterBody3D
 # RayCast Nodes
 
 @onready var ray_cast_ceiling: RayCast3D = $RayCastCeiling
-@onready var front: RayCast3D = $Checks/Front
-@onready var front_right: RayCast3D = $Checks/Front_right
 @onready var right: RayCast3D = $Checks/Right
-@onready var back_right: RayCast3D = $Checks/Back_right
-@onready var back: RayCast3D = $Checks/Back
-@onready var back_left: RayCast3D = $Checks/Back_left
 @onready var left: RayCast3D = $Checks/Left
-@onready var front_left: RayCast3D = $Checks/Front_left
+@onready var front: RayCast3D = $Checks/Front
+@onready var back: RayCast3D = $Checks/Back
 
 # Speed Vars
 var current_speed = 5.0
@@ -78,6 +74,9 @@ var head_bobbing_current_intensity = 0.0
 var wall_run_timer = 0.0  # Timer variable to track time since last jump
 const JUMP_TO_WALL_RUN_TIMER = 0.5  # Time buffer before sticking to the wall
 const MIN_WALL_RUN_SPEED = 3.0
+var wall_jump_cooldown = 0.0
+const wall_jump_cooldown_max = 0.7
+
 
 # Get the gravity from the project settings to be synced with RigidBody nodes.
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -98,15 +97,16 @@ func _input(event):
 			neck.rotation.y = clamp(neck.rotation.y, deg_to_rad(-120), deg_to_rad(120))
 		else:
 			rotate_y(deg_to_rad(-event.relative.x * mouse_sens))
-		head.rotate_x(deg_to_rad(-event.relative.y * mouse_sens))
-		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+			head.rotate_x(deg_to_rad(-event.relative.y * mouse_sens))
+			head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+
 func slide(delta, input_dir):
 	# Update slide cooldown timer
 	if slide_cooldown_timer > 0:
 		slide_cooldown_timer -= delta
 	
 	# Initiate slide
-	if Input.is_action_just_pressed("crouch") and current_speed > walking_speed and is_on_floor() and input_dir != Vector2.ZERO and slide_cooldown_timer <= 0:
+	if Input.is_action_just_pressed("crouch") and current_speed > walking_speed and is_on_floor() and slide_cooldown_timer <= 0:
 		is_sliding = true
 		can_crouch = false
 		is_free_looking = false
@@ -132,7 +132,16 @@ func slide(delta, input_dir):
 			can_slide = false
 			
 			slide_cooldown_timer = slide_cooldown_max  # Start the cooldown
+
+
+func check_wall_run_rays():
+	if front.is_colliding() || back.is_colliding() || left.is_colliding() || right.is_colliding():
+		return true
+
 func wall_run(delta):
+	
+	if wall_jump_cooldown > 0 && !is_wall_running:
+		wall_jump_cooldown -= delta
 	
 	if is_on_floor() && Input.is_action_just_pressed("jump"):
 		# Start timer when the player jumps
@@ -142,52 +151,70 @@ func wall_run(delta):
 	if !is_on_floor() and wall_run_timer >= 0:
 		wall_run_timer -= delta
 	
-	# Check wall run conditions and timer
-	if (right.is_colliding() or left.is_colliding()) and wall_run_timer <= 0:
-		if Input.is_action_pressed("jump") and Input.is_action_pressed("forward"):
+	
+	## Wall run
+	# Check wall run conditions
+	if (right.is_colliding() or left.is_colliding()) and wall_run_timer <= 0 && wall_jump_cooldown <= 0:
+		if Input.is_action_pressed("jump") and current_speed > walking_speed:
 			is_wall_running = true
 			is_sliding = false
-			is_free_looking = true
+			is_free_looking = false
 			velocity.y = 0
 			
-			if velocity.length() < MIN_WALL_RUN_SPEED:
+			
+			if current_speed < MIN_WALL_RUN_SPEED || Input.is_action_just_released("jump"):
 				is_wall_running = false
 				head.rotation.y = lerp(neck.rotation.y, 0.0, delta*lerp_speed)
 			# Raycasting to check for wall collision
 			else:
-				if right.is_colliding() and !front_right.is_colliding():
-					# Move player to the right until ray: right_front.is_colliding is false
-					translate(Vector3.RIGHT * delta)  # Adjust this line as needed for your game
+				if right.is_colliding():
+					if  check_wall_run_rays():
+						## Stick the player to the right wall
+						var wall_normal = right.get_collision_normal()
+						velocity = velocity.slide(wall_normal)  # Stick to the wall
+						
+						#rotate the head
+						head.rotation.z = lerp(head.rotation.y, 1.0, delta*lerp_speed)
 					
-					#rotate the head
-					head.rotation.z = lerp(head.rotation.z, 12.0, delta*lerp_speed)
-					
-				elif left.is_colliding() and !front_left.is_colliding():
-					# Move player to the left until ray: left_front.is_colliding is false
-					translate(Vector3.LEFT * delta)  # Adjust this line as needed for your game
-					
-					#rotate the head
-					head.rotation.z = lerp(head.rotation.z, -12.0, delta*lerp_speed)
+				elif left.is_colliding():
+					if  check_wall_run_rays():
+						## Stick the player to the left wall
+						var wall_normal = left.get_collision_normal()
+						velocity = velocity.slide(wall_normal)  # Stick to the wall
+						#rotate the head
+						head.rotation.z = lerp(head.rotation.y, -1.0, delta*lerp_speed)
 	else:
 		is_wall_running = false
 		# rotate the head back
 		head.rotation.z = lerp(neck.rotation.z, 0.0, delta*lerp_speed)
+		head.rotation.y = lerp(neck.rotation.y, 0.0, delta*lerp_speed)
 	
 	# Handle Wall Run Jump
-	if Input.is_action_just_released("jump") && left.is_colliding():
-		is_wall_running = false
-		# Apply jump force
-		velocity.y += jump_velocity
-		# apply a left force (away from wall)
-		velocity.x += jump_velocity * 1.0
-		wall_run_timer = 0  # End wall run immediately
-	elif Input.is_action_just_released("jump") && right.is_colliding():
-		is_wall_running = false
-		# Apply jump force
-		velocity.y += jump_velocity
-		# apply a left force (away from wall)
-		velocity.x += jump_velocity * -1.0
-		wall_run_timer = 0  # End wall run immediately
+	if Input.is_action_just_released("jump") && is_wall_running:
+		if left.is_colliding():
+			is_wall_running = false
+			wall_jump_cooldown = wall_jump_cooldown_max
+			
+			# Apply jump force
+			velocity.y += jump_velocity
+		
+			wall_run_timer = 0  # End wall run immediately
+			
+			head.rotation.z = lerp(neck.rotation.z, 0.0, delta*lerp_speed)
+			head.rotation.y = lerp(neck.rotation.y, 0.0, delta*lerp_speed)
+			
+		elif right.is_colliding():
+			
+			is_wall_running = false
+			wall_jump_cooldown = wall_jump_cooldown_max
+			
+			# Apply jump force
+			velocity.y += jump_velocity
+			
+			head.rotation.z = lerp(neck.rotation.z, 0.0, delta*lerp_speed)
+			head.rotation.y = lerp(neck.rotation.y, 0.0, delta*lerp_speed)
+
+
 func movement_states(delta):
 	# Handle Movement States
 	# crouching
@@ -223,6 +250,8 @@ func movement_states(delta):
 			is_walking  = true
 			is_sprinting = false
 			is_crouching = false
+
+
 func move(delta, input_dir):
 	# Get the input direction
 	input_dir = Input.get_vector("left", "right", "forward", "back")
@@ -243,10 +272,11 @@ func move(delta, input_dir):
 	else:
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 		velocity.z = move_toward(velocity.z, 0, current_speed)
+
+
 func free_look(delta):
 	# Handle Free Looking
-	if Input.is_action_pressed("free_look"):
-		is_free_looking = true
+	if Input.is_action_pressed("free_look") || is_free_looking:
 		if is_sliding:
 			# Allow free look to modify the camera rotation based on wall run status
 			eyes.rotation.z = lerp(eyes.rotation.z, -deg_to_rad(-34.0), delta * lerp_speed)
@@ -258,6 +288,8 @@ func free_look(delta):
 		# Smoothly reset camera rotation to default
 		eyes.rotation.z = lerp(eyes.rotation.z, 0.0, delta * lerp_speed)
 		neck.rotation.y = lerp(neck.rotation.y, 0.0, delta * lerp_speed)
+
+
 func head_bob(input_dir, delta):
 	# Handle Head bob
 	if is_sprinting:
@@ -279,19 +311,22 @@ func head_bob(input_dir, delta):
 	else:
 		eyes.position.y = lerp(eyes.position.y, 0.0, delta * lerp_speed)
 		eyes.position.x = lerp(eyes.position.x,  0.0, delta * lerp_speed)
+
+
 func jump():
-	# Handle jump.
-	# Normal
+	# Handle jump
 	if Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = velocity.y + jump_velocity + (current_speed/10)
 		can_crouch = true
 		animation_player.play("Jump")
 	
 	# Air control
-	if Input.is_action_just_pressed("left") && Input.is_action_just_pressed("right") && Input.is_action_just_pressed("back"):
-		air_lerp_speed = 10.0
+	if current_speed >= walking_speed && Input.is_action_just_pressed("left") && Input.is_action_just_pressed("right") && Input.is_action_just_pressed("back"):
+		air_lerp_speed = 5.0
 	else:
 		air_lerp_speed = 1.0
+
+
 func _physics_process(delta):
 	# Get the input direction
 	var input_dir = Input.get_vector("left", "right", "forward", "back")
