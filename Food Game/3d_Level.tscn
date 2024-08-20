@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://8a0w3hlgbhwa"]
+[gd_scene load_steps=11 format=3 uid="uid://8a0w3hlgbhwa"]
 
 [ext_resource type="Script" path="res://World.gd" id="1_8fle4"]
 [ext_resource type="Texture2D" uid="uid://wa4b26kd4m0h" path="res://assets/textures/dev/grids/Dark/texture_07.png" id="1_y2ckp"]
 [ext_resource type="Texture2D" uid="uid://cdycyw8kyycul" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="2_b1vul"]
+[ext_resource type="Texture2D" uid="uid://ce3it07vb0i0x" path="res://assets/textures/kenney_crosshair-pack/PNG/Outline/crosshair002.png" id="4_k3362"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a2dmh"]
 albedo_texture = ExtResource("1_y2ckp")
@@ -19,6 +20,12 @@ background_mode = 2
 sky = SubResource("Sky_eq547")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h8hcv"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urhf1"]
+bg_color = Color(0.521512, 0, 0.119167, 1)
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_8fle4")
@@ -80,9 +87,9 @@ size = Vector3(10.1837, 1, 6.90161)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D9" type="CSGBox3D" parent="Stage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.446813, 4.1171, -9.27)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.53496, 4.79252, -9.27)
 use_collision = true
-size = Vector3(7.81256, 4.07471, 0.855713)
+size = Vector3(5.63626, 2.72388, 0.855713)
 material = SubResource("StandardMaterial3D_a2dmh")
 
 [node name="CSGBox3D14" type="CSGBox3D" parent="Stage"]
@@ -169,9 +176,47 @@ layout_mode = 2
 placeholder_text = "Enter Address"
 alignment = 1
 
+[node name="Hud" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/Hud"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.1)
+pivot_offset = Vector2(576, 324)
+texture = ExtResource("4_k3362")
+stretch_mode = 5
+
+[node name="HealthBar" type="ProgressBar" parent="CanvasLayer/Hud"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.00694444
+anchor_top = 0.945988
+anchor_right = 0.177083
+anchor_bottom = 0.989198
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_h8hcv")
+theme_override_styles/fill = SubResource("StyleBoxFlat_urhf1")
+value = 100.0
+metadata/_edit_use_anchors_ = true
+
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://PlayerScene.tscn")
 spawn_path = NodePath("..")
 
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/JoinButton" to="." method="_on_join_button_pressed"]
+[connection signal="spawned" from="MultiplayerSpawner" to="." method="_on_multiplayer_spawner_spawned"]

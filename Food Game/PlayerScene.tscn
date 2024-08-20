@@ -1,9 +1,8 @@
-[gd_scene load_steps=27 format=4 uid="uid://cwienkfjgkcp7"]
+[gd_scene load_steps=26 format=4 uid="uid://cwienkfjgkcp7"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_cqklt"]
 [ext_resource type="Texture2D" uid="uid://b13m4pfkbs7ac" path="res://assets/Models/guns_low_poly/textures/Grey_baseColor.png" id="2_pm6ku"]
 [ext_resource type="Texture2D" uid="uid://buulrlmfiam70" path="res://assets/textures/muzzleflash.png" id="3_o8qm5"]
-[ext_resource type="Texture2D" uid="uid://ce3it07vb0i0x" path="res://assets/textures/kenney_crosshair-pack/PNG/Outline/crosshair002.png" id="4_xcufo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w3qxo"]
 resource_name = "Grey"
@@ -144,6 +143,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_s1kyo"]
 resource_name = "Slide"
+length = 2.0
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -151,7 +151,7 @@ tracks/0/path = NodePath(".:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.166667, 1),
+"times": PackedFloat32Array(0, 0.166667, 2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0)]
@@ -163,7 +163,7 @@ tracks/1/path = NodePath(".:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.166667, 1),
+"times": PackedFloat32Array(0, 0.166667, 2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(-0.0523599, 0, -0.0174533), Vector3(0, 0, 0)]
@@ -333,18 +333,8 @@ local_coords = true
 process_material = SubResource("ParticleProcessMaterial_jnh0h")
 draw_pass_1 = SubResource("PlaneMesh_6m1ey")
 
-[node name="TextureRect" type="TextureRect" parent="neck/Head/Eyes/PlayerCamera"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.1, 0.1)
-pivot_offset = Vector2(576, 324)
-texture = ExtResource("4_xcufo")
-stretch_mode = 5
-
 [node name="Player_Detection_Ray" type="RayCast3D" parent="neck/Head/Eyes/PlayerCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00110912, 2.38419e-07, -0.544739)
 target_position = Vector3(0, 0, -50)
 collision_mask = 2
 

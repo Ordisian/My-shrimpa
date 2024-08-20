@@ -1,5 +1,8 @@
 extends CharacterBody3D
 
+#Signals
+signal health_changed(health_value)
+
 # Player Nodes
 
 @onready var neck: Node3D = $neck
@@ -107,13 +110,13 @@ func _input(event):
 	if Input.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
-	if Input.is_action_just_pressed("shoot") and gun_animations.current_animation != "pistol_shoot":
+	if Input.is_action_just_pressed("shoot") and gun_animations.current_animation != "Pistol_Shoot":
 		play_pistol_shoot_effect.rpc()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		if player_detection_ray.is_colliding():
 			var hit_player = player_detection_ray.get_collider()
 			damage = 35
-			hit_player.receive_damage.rpc_id(hit_player.get_multiplayer_authority())
+			hit_player.receive_damage.rpc_id(hit_player.get_multiplayer_authority(), damage)
 	
 	# Mouse Looking Logic
 	if event is InputEventMouseMotion:
@@ -141,23 +144,39 @@ func slide(delta, input_dir):
 		
 		slide_vector = input_dir
 		slide_timer = slide_timer_max
+		
+	else:
+		animation_player.stop()
 	
 	# Handle sliding state
 	if is_sliding:
-		
 		slide_timer -= delta
 		
+		velocity.x = slide_vector.x
+		velocity.y = slide_vector.y  # Adjust if necessary
+		
+		# Slightly adjust position to keep sliding smooth
+		position.y -= 0.1
+		
+		# Handle slide jumping
+		if Input.is_action_just_pressed("jump"):
+			is_sliding = false
+			velocity.y = (velocity.y + jump_velocity + current_speed) / 10  # Apply jump force
+			slide_cooldown_timer = slide_cooldown_max  # Start cooldown
+			return  # Exit function to avoid further sliding logic
+		
+		# End sliding
 		if slide_timer <= 0 or Input.is_action_just_released("crouch"):
 			is_sliding = false
-			is_crouching = slide_timer > 0 && Input.is_action_just_released("crouch")
-			is_walking = false if is_crouching else true
+			is_crouching = slide_timer > 0 and Input.is_action_just_released("crouch")
+			is_walking = not is_crouching
 			is_sprinting = false
 			is_free_looking = false
 			
 			can_crouch = true
 			can_slide = false
 			
-			slide_cooldown_timer = slide_cooldown_max  # Start the cooldown
+			slide_cooldown_timer = slide_cooldown_max  # Start cooldown
 
 func check_wall_run_rays():
 	if front.is_colliding() || back.is_colliding() || left.is_colliding() || right.is_colliding():
@@ -337,6 +356,21 @@ func head_bob(input_dir, delta):
 		eyes.position.y = lerp(eyes.position.y, 0.0, delta * lerp_speed)
 		eyes.position.x = lerp(eyes.position.x,  0.0, delta * lerp_speed)
 
+func jump():
+	# Handle jump
+	if Input.is_action_just_pressed("jump") and is_on_floor() and !is_sliding:
+		velocity.y = velocity.y + jump_velocity + (current_speed/10)
+		can_crouch = true
+		animation_player.play("Jump")
+	
+	# Air control
+	if current_speed > sprinting_speed && Input.is_action_just_pressed("back"):
+		air_lerp_speed = 5.0
+	else:
+		air_lerp_speed = 1.0
+
+
+@rpc("any_peer")
 func play_gun_animations(input_dir):
 	if gun_animations.current_animation == "Pistol_Shoot":
 		pass
@@ -345,19 +379,25 @@ func play_gun_animations(input_dir):
 	else:
 		gun_animations.play("Pistol_Idle")
 
-func jump():
-	# Handle jump
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = velocity.y + jump_velocity + (current_speed/10)
-		can_crouch = true
-		animation_player.play("Jump")
-	
-	# Air control
-	if current_speed >= walking_speed && Input.is_action_just_pressed("left") && Input.is_action_just_pressed("right") && Input.is_action_just_pressed("back"):
-		air_lerp_speed = 5.0
-	else:
-		air_lerp_speed = 1.0
+@rpc("call_local")
+func play_pistol_shoot_effect():
+	gun_animations.stop()
+	gun_animations.play("Pistol_Shoot")
+	muzzle_flash.restart()
+	muzzle_flash.emitting = true
 
+@rpc("any_peer")
+func receive_damage(damage):
+	health -= damage
+	if health <= 0:
+		position = Vector3.ZERO
+		health = 100
+	health_changed.emit(health)
+
+@rpc("any_peer")
+func _on_gun_animations_animation_finished(anim_name: StringName) -> void:
+	if anim_name == "Pistol_Shoot":
+		gun_animations.play("Pistol_Idle")
 
 func _physics_process(delta):
 	if not is_multiplayer_authority(): return
@@ -385,21 +425,3 @@ func _physics_process(delta):
 	last_velocity = velocity
 	
 	move_and_slide()
-
-@rpc("any_peer")
-func play_pistol_shoot_effect():
-	gun_animations.stop()
-	gun_animations.play("Pistol_Shoot")
-	muzzle_flash.restart()
-	muzzle_flash.emitting = true
-
-@rpc("any_peer")
-func receive_damage(damage):
-	health -= damage
-	if health <= 0:
-		health = health_max
-		position = Vector3.ZERO
-
-func _on_gun_animations_animation_finished(anim_name: StringName) -> void:
-	if anim_name == "Pistol_Shoot":
-		gun_animations.play("Pistol_Idle")
