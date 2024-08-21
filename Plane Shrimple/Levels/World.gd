@@ -8,7 +8,7 @@ extends Node3D
 @onready var health_bar: ProgressBar = $CanvasLayer/Hud/HealthBar
 
 
-const PLAYER = preload("res://PlayerScene.tscn")
+const PLAYER = preload("res://Player/PlayerController/PlayerControllerScene.tscn")
 const PORT = 9999
 var enet_peer = ENetMultiplayerPeer.new()
 

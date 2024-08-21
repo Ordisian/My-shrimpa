@@ -1,0 +1,13 @@
+res://3d_Level.tscn
+res://PlayerScene.tscn
+res://Gun_Array.tscn
+res://Player.gd
+res://Player/PlayerScene.tscn
+res://Levels/3d_Level.tscn
+res://Levels/World.gd
+res://Player/character_body_3d.gd
+res://Player/PlayerControllerScene.tscn
+res://Player/PlayerController/PlayerControllerScene.tscn
+res://Player/PlayerWeapons/player_weapons.tscn
+res://Player/PlayerController/PlayerController.gd
+res://Notes.gd

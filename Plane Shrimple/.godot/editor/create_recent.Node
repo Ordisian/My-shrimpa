@@ -1,3 +1,4 @@
+Node3D
 ProgressBar
 Control
 RayCast3D
@@ -12,4 +13,3 @@ Label
 VBoxContainer
 MarginContainer
 PanelContainer
-CanvasLayer

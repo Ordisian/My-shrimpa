@@ -1,16 +1,16 @@
 [gd_scene load_steps=11 format=3 uid="uid://8a0w3hlgbhwa"]
 
-[ext_resource type="Script" path="res://World.gd" id="1_8fle4"]
-[ext_resource type="Texture2D" uid="uid://wa4b26kd4m0h" path="res://assets/textures/dev/grids/Dark/texture_07.png" id="1_y2ckp"]
-[ext_resource type="Texture2D" uid="uid://cdycyw8kyycul" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="2_b1vul"]
-[ext_resource type="Texture2D" uid="uid://ce3it07vb0i0x" path="res://assets/textures/kenney_crosshair-pack/PNG/Outline/crosshair002.png" id="4_k3362"]
+[ext_resource type="Script" path="res://Levels/World.gd" id="1_fnkfl"]
+[ext_resource type="Texture2D" uid="uid://wa4b26kd4m0h" path="res://assets/textures/dev/grids/Dark/texture_07.png" id="2_g48n6"]
+[ext_resource type="Texture2D" uid="uid://cdycyw8kyycul" path="res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr" id="3_vxn2h"]
+[ext_resource type="Texture2D" uid="uid://ce3it07vb0i0x" path="res://assets/textures/kenney_crosshair-pack/PNG/Outline/crosshair002.png" id="4_5stou"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a2dmh"]
-albedo_texture = ExtResource("1_y2ckp")
+albedo_texture = ExtResource("2_g48n6")
 uv1_triplanar = true
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_yruah"]
-panorama = ExtResource("2_b1vul")
+panorama = ExtResource("3_vxn2h")
 
 [sub_resource type="Sky" id="Sky_eq547"]
 sky_material = SubResource("PanoramaSkyMaterial_yruah")
@@ -28,7 +28,7 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 bg_color = Color(0.521512, 0, 0.119167, 1)
 
 [node name="World" type="Node3D"]
-script = ExtResource("1_8fle4")
+script = ExtResource("1_fnkfl")
 
 [node name="Stage" type="Node3D" parent="."]
 
@@ -177,6 +177,7 @@ placeholder_text = "Enter Address"
 alignment = 1
 
 [node name="Hud" type="Control" parent="CanvasLayer"]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -196,7 +197,7 @@ grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.1, 0.1)
 pivot_offset = Vector2(576, 324)
-texture = ExtResource("4_k3362")
+texture = ExtResource("4_5stou")
 stretch_mode = 5
 
 [node name="HealthBar" type="ProgressBar" parent="CanvasLayer/Hud"]
@@ -214,7 +215,6 @@ value = 100.0
 metadata/_edit_use_anchors_ = true
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://PlayerScene.tscn")
 spawn_path = NodePath("..")
 
 [connection signal="pressed" from="CanvasLayer/MainMenu/MarginContainer/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]

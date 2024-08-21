@@ -1,14 +1,10 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1724136962
-3d_Level.tscn::PackedScene::2317790534315428752::1724136848::0::1::::<><>::res://World.gd<>uid://wa4b26kd4m0h::::res://assets/textures/dev/grids/Dark/texture_07.png<>uid://cdycyw8kyycul::::res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr<>uid://ce3it07vb0i0x::::res://assets/textures/kenney_crosshair-pack/PNG/Outline/crosshair002.png
-character_body_3d.gd::GDScript::-1::1723930242::0::1::::<>CharacterBody3D<>::
+::res://::1724188833
 export_presets.cfg::TextFile::-1::1724136361::0::1::::<><>::
-Gun_Array.tscn::PackedScene::8408921616867815755::1724136848::0::1::::<><>::uid://cx2lf28l8dsng::::res://assets/Models/guns_low_poly/scene.gltf
 icon.svg::CompressedTexture2D::4440124089542172077::1723688694::1723688703::1::::<><>::
-Player.gd::GDScript::-1::1724135587::0::1::::<>CharacterBody3D<>::
-PlayerScene.tscn::PackedScene::6333777566122078518::1724136914::0::1::::<><>::res://Player.gd<>uid://b13m4pfkbs7ac::::res://assets/Models/guns_low_poly/textures/Grey_baseColor.png<>uid://buulrlmfiam70::::res://assets/textures/muzzleflash.png
-World.gd::GDScript::-1::1724136096::0::1::::<>Node3D<>::
-::res://assets/::1723953532
+new_script.gd::GDScript::-1::1724216747::0::1::::<>Node<>::
+::res://assets/::1724182738
+Gun_Array.tscn::PackedScene::8408921616867815755::1724182709::0::1::::<><>::uid://cx2lf28l8dsng::::res://assets/Models/guns_low_poly/scene.gltf
 ::res://assets/hdris/::1723748098
 kloofendal_48d_partly_cloudy_puresky_2k.hdr::CompressedTexture2D::5033118464416605819::1723747396::1723748098::1::::<><>::
 ::res://assets/Models/::1723953521
@@ -2857,3 +2853,12 @@ trace_05_rotated.png::CompressedTexture2D::419291202577791175::1573698983::17239
 trace_06_rotated.png::CompressedTexture2D::5239363580234729003::1573698983::1723957808::1::::<><>::
 trace_07_rotated.png::CompressedTexture2D::1315590897856677736::1573698984::1723957808::1::::<><>::
 ::res://assets/textures/kenney_particle-pack/Unity samples/::1723957800
+::res://Levels/::1724216698
+3d_Level.tscn::PackedScene::2317790534315428752::1724216698::0::1::::<><>::res://Levels/World.gd<>uid://wa4b26kd4m0h::::res://assets/textures/dev/grids/Dark/texture_07.png<>uid://cdycyw8kyycul::::res://assets/hdris/kloofendal_48d_partly_cloudy_puresky_2k.hdr<>uid://ce3it07vb0i0x::::res://assets/textures/kenney_crosshair-pack/PNG/Outline/crosshair002.png
+World.gd::GDScript::-1::1724183295::0::1::::<>Node3D<>::
+::res://Player/::1724183209
+::res://Player/PlayerController/::1724216698
+PlayerController.gd::GDScript::-1::1724216552::0::1::::<>CharacterBody3D<>::
+PlayerControllerScene.tscn::PackedScene::6928487710189198695::1724216733::0::1::::<><>::res://Player/PlayerController/PlayerController.gd<>uid://b13m4pfkbs7ac::::res://assets/Models/guns_low_poly/textures/Grey_baseColor.png<>uid://buulrlmfiam70::::res://assets/textures/muzzleflash.png
+::res://Player/PlayerWeapons/::1724216698
+player_weapons.tscn::PackedScene::6885561750260970387::1724216698::0::1::::<><>::
